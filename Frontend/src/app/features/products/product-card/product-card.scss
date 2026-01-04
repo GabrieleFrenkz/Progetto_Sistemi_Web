@@ -1,0 +1,96 @@
+.example-card {
+    max-width: 100%;
+    margin: auto;
+    text-align: center;
+    position: relative;
+
+    .wishlist-button {
+        position: absolute;
+        top: 8px;
+        right: 8px;
+        z-index: 10;
+        background-color: white;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+
+        mat-icon {
+            color: #757575;
+            transition: color 0.2s;
+        }
+
+        &:hover mat-icon {
+            color: #e91e63;
+        }
+
+        &.in-wishlist mat-icon {
+            color: #e91e63;
+        }
+    }
+
+    img {
+        max-width: 400px;
+        height: auto;
+        border-radius: 8px;
+        margin-bottom: 1rem;
+    }
+
+    .price-container {
+        margin: 1rem 0;
+        position: relative;
+
+        .discount-badge {
+            display: inline-block;
+            background-color: #e53935;
+            color: white;
+            padding: 0.25rem 0.5rem;
+            border-radius: 4px;
+            font-weight: bold;
+            font-size: 0.875rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .price-line {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.75rem;
+        }
+
+        .original-price {
+            text-decoration: line-through;
+            color: #757575;
+            font-size: 1rem;
+        }
+
+        .sale-price {
+            color: #e53935;
+            font-size: 1.25rem;
+            font-weight: bold;
+        }
+
+        .regular-price {
+            font-size: 1.25rem;
+            font-weight: bold;
+            color: #333;
+        }
+    }
+
+    .card-actions {
+        display: flex;
+        gap: 0.5rem;
+        justify-content: center;
+        padding: 1rem;
+        flex-wrap: wrap;
+
+        button {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+
+            mat-icon {
+                font-size: 20px;
+                width: 20px;
+                height: 20px;
+            }
+        }
+    }
+}

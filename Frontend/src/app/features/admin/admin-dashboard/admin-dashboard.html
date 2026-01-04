@@ -1,0 +1,359 @@
+<div class="admin-dashboard">
+  <h1>Admin Dashboard</h1>
+
+  <mat-tab-group>
+    <!-- Statistics Tab -->
+    <mat-tab label="Statistics">
+      <div class="tab-content">
+        @if (stats()) {
+          <div class="stats-grid">
+            <mat-card>
+              <mat-card-header>
+                <mat-card-title>Total Orders</mat-card-title>
+              </mat-card-header>
+              <mat-card-content>
+                <div class="stat-value">{{ stats()!.total_orders }}</div>
+              </mat-card-content>
+            </mat-card>
+
+            <mat-card>
+              <mat-card-header>
+                <mat-card-title>Total Revenue</mat-card-title>
+              </mat-card-header>
+              <mat-card-content>
+                <div class="stat-value">${{ stats()!.total_revenue.toFixed(2) }}</div>
+              </mat-card-content>
+            </mat-card>
+
+            <mat-card>
+              <mat-card-header>
+                <mat-card-title>Total Users</mat-card-title>
+              </mat-card-header>
+              <mat-card-content>
+                <div class="stat-value">{{ stats()!.total_users }}</div>
+              </mat-card-content>
+            </mat-card>
+
+            <mat-card>
+              <mat-card-header>
+                <mat-card-title>Total Products</mat-card-title>
+              </mat-card-header>
+              <mat-card-content>
+                <div class="stat-value">{{ stats()!.total_products }}</div>
+              </mat-card-content>
+            </mat-card>
+
+            <mat-card class="warning-card">
+              <mat-card-header>
+                <mat-card-title>Low Stock Products</mat-card-title>
+              </mat-card-header>
+              <mat-card-content>
+                <div class="stat-value">{{ stats()!.low_stock_products }}</div>
+              </mat-card-content>
+            </mat-card>
+          </div>
+
+          @if (stats()!.recent_orders.length > 0) {
+            <mat-card class="recent-orders">
+              <mat-card-header>
+                <mat-card-title>Recent Orders</mat-card-title>
+              </mat-card-header>
+              <mat-card-content>
+                <table mat-table [dataSource]="stats()!.recent_orders">
+                  <ng-container matColumnDef="id">
+                    <th mat-header-cell *matHeaderCellDef>Order ID</th>
+                    <td mat-cell *matCellDef="let order">#{{ order.id }}</td>
+                  </ng-container>
+
+                  <ng-container matColumnDef="customer">
+                    <th mat-header-cell *matHeaderCellDef>Customer</th>
+                    <td mat-cell *matCellDef="let order">
+                      {{ order.customer?.firstName }} {{ order.customer?.lastName }}
+                    </td>
+                  </ng-container>
+
+                  <ng-container matColumnDef="total">
+                    <th mat-header-cell *matHeaderCellDef>Total</th>
+                    <td mat-cell *matCellDef="let order">${{ order.total }}</td>
+                  </ng-container>
+
+                  <ng-container matColumnDef="createdAt">
+                    <th mat-header-cell *matHeaderCellDef>Date</th>
+                    <td mat-cell *matCellDef="let order">{{ order.createdAt | date:'short' }}</td>
+                  </ng-container>
+
+                  <tr mat-header-row *matHeaderRowDef="recentOrdersColumns"></tr>
+                  <tr mat-row *matRowDef="let row; columns: recentOrdersColumns"></tr>
+                </table>
+              </mat-card-content>
+            </mat-card>
+          }
+        } @else {
+          <div class="loading-container">
+            <mat-spinner></mat-spinner>
+          </div>
+        }
+      </div>
+    </mat-tab>
+
+    <!-- Products Management Tab -->
+    <mat-tab label="Products Management">
+      <div class="tab-content">
+        <mat-card class="product-form-card">
+          <mat-card-header>
+            <mat-card-title>{{ editingProduct() ? 'Edit Product' : 'Add New Product' }}</mat-card-title>
+          </mat-card-header>
+          <mat-card-content>
+            <form [formGroup]="productForm" (ngSubmit)="onSaveProduct()">
+              <div class="form-row">
+                <mat-form-field appearance="outline">
+                  <mat-label>Product ID</mat-label>
+                  <input matInput formControlName="id" [readonly]="!!editingProduct()" />
+                </mat-form-field>
+
+                <mat-form-field appearance="outline">
+                  <mat-label>Title</mat-label>
+                  <input matInput formControlName="title" />
+                </mat-form-field>
+              </div>
+
+              <mat-form-field appearance="outline" class="full-width">
+                <mat-label>Description</mat-label>
+                <textarea matInput formControlName="description" rows="3"></textarea>
+              </mat-form-field>
+
+              <div class="form-row">
+                <mat-form-field appearance="outline">
+                  <mat-label>Price</mat-label>
+                  <input matInput type="number" formControlName="price" />
+                </mat-form-field>
+
+                <mat-form-field appearance="outline">
+                  <mat-label>Original Price</mat-label>
+                  <input matInput type="number" formControlName="original_price" />
+                </mat-form-field>
+
+                <mat-form-field appearance="outline">
+                  <mat-label>Quantity</mat-label>
+                  <input matInput type="number" formControlName="quantity" />
+                </mat-form-field>
+              </div>
+
+              <mat-form-field appearance="outline" class="full-width">
+                <mat-label>Thumbnail URL</mat-label>
+                <input matInput formControlName="thumbnail" />
+              </mat-form-field>
+
+              <div class="form-actions">
+                <button mat-raised-button color="primary" type="submit" [disabled]="!productForm.valid">
+                  {{ editingProduct() ? 'Update' : 'Create' }} Product
+                </button>
+                @if (editingProduct()) {
+                  <button mat-button type="button" (click)="resetForm()">Cancel</button>
+                }
+              </div>
+            </form>
+          </mat-card-content>
+        </mat-card>
+
+        @if (loading()) {
+          <div class="loading-container">
+            <mat-spinner></mat-spinner>
+          </div>
+        } @else {
+          <mat-card class="products-table-card">
+            <mat-card-header>
+              <mat-card-title>Products List</mat-card-title>
+            </mat-card-header>
+            <mat-card-content>
+              <table mat-table [dataSource]="products()">
+                <ng-container matColumnDef="id">
+                  <th mat-header-cell *matHeaderCellDef>ID</th>
+                  <td mat-cell *matCellDef="let product">{{ product.id }}</td>
+                </ng-container>
+
+                <ng-container matColumnDef="title">
+                  <th mat-header-cell *matHeaderCellDef>Title</th>
+                  <td mat-cell *matCellDef="let product">{{ product.title }}</td>
+                </ng-container>
+
+                <ng-container matColumnDef="price">
+                  <th mat-header-cell *matHeaderCellDef>Price</th>
+                  <td mat-cell *matCellDef="let product">${{ product.price }}</td>
+                </ng-container>
+
+                <ng-container matColumnDef="quantity">
+                  <th mat-header-cell *matHeaderCellDef>Quantity</th>
+                  <td mat-cell *matCellDef="let product">
+                    <span [class.low-stock]="(product.quantity || 0) < 10">
+                      {{ product.quantity || 0 }}
+                    </span>
+                  </td>
+                </ng-container>
+
+                <ng-container matColumnDef="actions">
+                  <th mat-header-cell *matHeaderCellDef>Actions</th>
+                  <td mat-cell *matCellDef="let product">
+                    <button mat-icon-button (click)="onAdjustQuantity(product.id, 10)" title="Add 10">
+                      <mat-icon>add</mat-icon>
+                    </button>
+                    <button mat-icon-button (click)="onAdjustQuantity(product.id, -10)" title="Remove 10">
+                      <mat-icon>remove</mat-icon>
+                    </button>
+                    <button mat-icon-button (click)="onEditProduct(product)" title="Edit">
+                      <mat-icon>edit</mat-icon>
+                    </button>
+                    <button mat-icon-button color="warn" (click)="onDeleteProduct(product.id)" title="Delete">
+                      <mat-icon>delete</mat-icon>
+                    </button>
+                  </td>
+                </ng-container>
+
+                <tr mat-header-row *matHeaderRowDef="productsColumns"></tr>
+                <tr mat-row *matRowDef="let row; columns: productsColumns"></tr>
+              </table>
+            </mat-card-content>
+          </mat-card>
+        }
+      </div>
+    </mat-tab>
+
+    <!-- Orders Management Tab -->
+    <mat-tab label="Orders History">
+      <div class="tab-content">
+        @if (orders()) {
+          <div class="orders-stats">
+            <mat-card>
+              <mat-card-header>
+                <mat-card-title>Total Orders</mat-card-title>
+              </mat-card-header>
+              <mat-card-content>
+                <div class="stat-value">{{ orders()!.stats.total_orders }}</div>
+              </mat-card-content>
+            </mat-card>
+
+            <mat-card>
+              <mat-card-header>
+                <mat-card-title>Total Revenue</mat-card-title>
+              </mat-card-header>
+              <mat-card-content>
+                <div class="stat-value">${{ orders()!.stats.total_revenue.toFixed(2) }}</div>
+              </mat-card-content>
+            </mat-card>
+
+            <mat-card>
+              <mat-card-header>
+                <mat-card-title>User Orders</mat-card-title>
+              </mat-card-header>
+              <mat-card-content>
+                <div class="stat-value">{{ orders()!.stats.orders_by_status.with_user }}</div>
+              </mat-card-content>
+            </mat-card>
+
+            <mat-card>
+              <mat-card-header>
+                <mat-card-title>Guest Orders</mat-card-title>
+              </mat-card-header>
+              <mat-card-content>
+                <div class="stat-value">{{ orders()!.stats.orders_by_status.guest }}</div>
+              </mat-card-content>
+            </mat-card>
+          </div>
+
+          <div class="orders-list">
+            <!-- Nessun ordine -->
+            <mat-card *ngIf="orders()!.orders.length === 0" class="empty-state">
+              <mat-card-content>
+                <mat-icon>shopping_bag</mat-icon>
+                <h2>No orders found</h2>
+                <p>There are no orders in the system yet.</p>
+              </mat-card-content>
+            </mat-card>
+
+            <!-- Accordion con gli ordini -->
+            <mat-accordion *ngIf="orders()!.orders.length > 0">
+              <mat-expansion-panel *ngFor="let order of orders()!.orders">
+                <mat-expansion-panel-header>
+                  <mat-panel-title>
+                    <div class="order-header">
+                      <span class="order-id">Order #{{ order.id }}</span>
+                      <span class="order-date">{{ formatOrderDate(order.createdAt) }}</span>
+                    </div>
+                  </mat-panel-title>
+                  <mat-panel-description>
+                    <div class="order-summary">
+                      <span class="order-items">{{ getOrderItemsCount(order) }} items</span>
+                      <span class="order-total">€{{ order.total }}</span>
+                    </div>
+                  </mat-panel-description>
+                </mat-expansion-panel-header>
+
+                <!-- Dettagli ordine -->
+                <div class="order-details">
+                  <!-- Informazioni cliente -->
+                  <div class="section">
+                    <h3>Customer Information</h3>
+                    @if (order.user) {
+                      <p><strong>Name:</strong> {{ order.user.firstName || 'N/A' }} {{ order.user.lastName || '' }}</p>
+                      <p><strong>Email:</strong> {{ order.user.email || 'N/A' }}</p>
+                      <p><strong>Type:</strong> Registered User</p>
+                    } @else {
+                      <p><strong>Name:</strong> {{ order.customer?.firstName || 'N/A' }} {{ order.customer?.lastName || '' }}</p>
+                      <p><strong>Email:</strong> {{ order.customer?.email || 'N/A' }}</p>
+                      <p><strong>Type:</strong> Guest</p>
+                    }
+                  </div>
+
+                  <mat-divider></mat-divider>
+
+                  <!-- Indirizzo di spedizione -->
+                  <div class="section">
+                    <h3>Shipping Address</h3>
+                    <p>{{ order.address?.street || 'N/A' }}</p>
+                    <p>{{ order.address?.city || 'N/A' }}, {{ order.address?.zip || 'N/A' }}</p>
+                  </div>
+
+                  <mat-divider></mat-divider>
+
+                  <!-- Prodotti ordinati -->
+                  <div class="section">
+                    <h3>Order Items</h3>
+                    <div class="order-items-list">
+                      <div *ngFor="let item of order.orderItems" class="order-item">
+                        <div class="item-info">
+                          <span class="item-name">{{ item.product?.title || 'Product #' + item.productId }}</span>
+                          <span class="item-quantity">x{{ item.quantity }}</span>
+                        </div>
+                        <span class="item-price">€{{ (item.unitPrice * item.quantity).toFixed(2) }}</span>
+                      </div>
+                    </div>
+                  </div>
+
+                  <mat-divider></mat-divider>
+
+                  <!-- Totale e azioni -->
+                  <div class="section total-section">
+                    <div class="total-row">
+                      <h3>Total</h3>
+                      <p class="total-amount">€{{ order.total }}</p>
+                    </div>
+                    <div class="admin-actions">
+                      <button mat-raised-button color="warn" (click)="onDeleteOrder(order.id)">
+                        <mat-icon>delete</mat-icon>
+                        Delete Order
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              </mat-expansion-panel>
+            </mat-accordion>
+          </div>
+        } @else {
+          <div class="loading-container">
+            <mat-spinner></mat-spinner>
+          </div>
+        }
+      </div>
+    </mat-tab>
+  </mat-tab-group>
+</div>

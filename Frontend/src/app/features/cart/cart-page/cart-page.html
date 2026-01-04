@@ -1,0 +1,135 @@
+<div class="cart-container">
+  <h1>Shopping Cart</h1>
+
+  @if (loading()) {
+    <div class="loading-container">
+      <mat-spinner></mat-spinner>
+      <p>Loading cart...</p>
+    </div>
+  }
+
+  @if (error()) {
+    <mat-card appearance="outlined" class="error-card">
+      <mat-card-content>
+        <mat-icon color="warn">error</mat-icon>
+        <p>{{ error() }}</p>
+        <button mat-raised-button color="primary" (click)="cartService.loadCart()">
+          Retry
+        </button>
+      </mat-card-content>
+    </mat-card>
+  }
+
+  @if (!loading() && isEmpty()) {
+    <mat-card appearance="outlined" class="empty-cart">
+      <mat-card-content>
+        <mat-icon class="empty-icon">shopping_cart</mat-icon>
+        <h2>Your cart is empty</h2>
+        <p>Start adding products to your cart!</p>
+        <button mat-raised-button color="primary" (click)="continueShopping()">
+          Continue Shopping
+        </button>
+      </mat-card-content>
+    </mat-card>
+  }
+
+  @if (!loading() && !isEmpty()) {
+    <div class="cart-content">
+      <!-- Cart Items -->
+      <div class="cart-items">
+        @for (item of items(); track item.id) {
+          <mat-card appearance="outlined" class="cart-item">
+            <mat-card-content>
+              <div class="item-details">
+                <!-- Product Image -->
+                @if (item.product.thumbnail) {
+                  <img [src]="item.product.thumbnail"
+                       [alt]="item.product.title"
+                       class="item-image">
+                }
+
+                <!-- Product Info -->
+                <div class="item-info">
+                  <h3>{{ item.product.title }}</h3>
+                  <p class="item-price">{{ item.unitPrice | currency: 'EUR' }}</p>
+
+                  @if (item.unitPrice !== item.product.price) {
+                    <p class="price-notice">
+                      <mat-icon>info</mat-icon>
+                      Price locked at time of adding to cart
+                    </p>
+                  }
+
+                  <!-- Quantity Controls -->
+                  <div class="quantity-controls">
+                    <button mat-icon-button
+                            (click)="decrementQuantity(item)"
+                            [disabled]="loading()">
+                      <mat-icon>remove</mat-icon>
+                    </button>
+                    <span class="quantity">{{ item.quantity }}</span>
+                    <button mat-icon-button
+                            (click)="incrementQuantity(item)"
+                            [disabled]="loading()">
+                      <mat-icon>add</mat-icon>
+                    </button>
+                  </div>
+                </div>
+
+                <!-- Subtotal & Remove -->
+                <div class="item-actions">
+                  <p class="subtotal">{{ item.subtotal | currency: 'EUR' }}</p>
+                  <button mat-icon-button
+                          color="warn"
+                          (click)="removeItem(item)"
+                          [disabled]="loading()"
+                          aria-label="Remove item">
+                    <mat-icon>delete</mat-icon>
+                  </button>
+                </div>
+              </div>
+            </mat-card-content>
+          </mat-card>
+        }
+      </div>
+
+      <!-- Cart Summary -->
+      <div class="cart-summary">
+        <mat-card appearance="outlined">
+          <mat-card-header>
+            <mat-card-title>Order Summary</mat-card-title>
+          </mat-card-header>
+          <mat-card-content>
+            <div class="summary-row">
+              <span>Items ({{ itemCount() }})</span>
+              <span>{{ total() | currency: 'EUR' }}</span>
+            </div>
+            <mat-divider></mat-divider>
+            <div class="summary-row total">
+              <span>Total</span>
+              <span>{{ total() | currency: 'EUR' }}</span>
+            </div>
+          </mat-card-content>
+          <mat-card-actions>
+            <button mat-raised-button
+                    color="primary"
+                    (click)="goToCheckout()"
+                    [disabled]="loading()"
+                    class="checkout-button">
+              Proceed to Checkout
+            </button>
+            <button mat-button (click)="continueShopping()">
+              Continue Shopping
+            </button>
+            <button mat-button
+                    color="warn"
+                    (click)="clearCart()"
+                    [disabled]="loading()">
+              Clear Cart
+            </button>
+          </mat-card-actions>
+        </mat-card>
+      </div>
+    </div>
+  }
+</div>
