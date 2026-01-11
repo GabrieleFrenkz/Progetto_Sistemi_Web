@@ -6,7 +6,7 @@ import { FormsModule } from '@angular/forms';
 import { MatFormFieldModule, MatLabel } from '@angular/material/form-field';
 import { MatInput } from '@angular/material/input';
 import { AsyncPipe } from '@angular/common';
-import { BehaviorSubject, map, debounceTime, distinctUntilChanged, switchMap } from 'rxjs';
+import { BehaviorSubject, map, debounceTime, distinctUntilChanged, switchMap, combineLatest } from 'rxjs';
 import { MatSelectModule } from '@angular/material/select';
 import { PageEvent, MatPaginatorModule } from '@angular/material/paginator';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
@@ -64,9 +64,8 @@ export class ProductPage {
 
   page$ = new BehaviorSubject(1);
   pageSize = 10;
-  paged$ = this.filteredProducts$.pipe(
-    map((items) => {
-      const page = this.page$.value;
+  paged$ = combineLatest([this.filteredProducts$, this.page$]).pipe(
+    map(([items, page]) => {
       const start = (page - 1) * this.pageSize;
       const end = start + this.pageSize;
       return items.slice(start, end);
