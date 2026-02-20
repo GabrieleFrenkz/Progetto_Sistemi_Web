@@ -22,9 +22,6 @@
 - [Struttura del Progetto](#-struttura-del-progetto)
 - [Funzionalità Implementate](#-funzionalità-implementate)
 - [Testing](#-testing)
-- [Documentazione Aggiuntiva](#-documentazione-aggiuntiva)
-- [Deployment](#-deployment)
-- [License](#-license)
 
 ---
 
@@ -231,25 +228,6 @@ cd Backend
 # Avvia il server Rails
 rbin/dev
 
-
-# Output atteso:
-# => Booting Puma
-# => Rails 8.1.1 application starting in development
-# => Run `bin/rails server --help` for more startup options
-# Puma starting in single mode...
-# * Listening on http://127.0.0.1:3000
-```
-
-**Verifica Backend:**
-```bash
-# In un altro terminale
-curl http://localhost:3000/up
-# Risposta: {"status":"ok"}
-
-curl http://localhost:3000/api/products
-# Risposta: Array JSON di prodotti
-```
-
 ### Avvia Frontend (Porta 4200)
 
 ```bash
@@ -261,14 +239,6 @@ npm start
 # oppure
 ng serve
 
-# Output atteso:
-# Initial chunk files | Names         |  Raw size
-# main.js             | main          |   X.XX kB
-# ...
-# Application bundle generation complete.
-# Watch mode enabled. Watching for file changes...
-# ➜ Local:   http://localhost:4200/
-```
 
 **Accedi all'applicazione:**
 - Apri il browser: **http://localhost:4200**
@@ -340,38 +310,6 @@ Ruolo:    user
 | POST | `/api/login` | ❌ | Login e generazione JWT |
 | GET | `/api/me` | ✅ | Ottieni utente corrente |
 
-**Esempio Request:**
-```bash
-# Registrazione
-curl -X POST http://localhost:3000/api/register \
-  -H "Content-Type: application/json" \
-  -d '{
-    "user": {
-      "email": "test@example.com",
-      "password": "password123",
-      "password_confirmation": "password123",
-      "first_name": "Test",
-      "last_name": "User"
-    }
-  }'
-
-# Login
-curl -X POST http://localhost:3000/api/login \
-  -H "Content-Type: application/json" \
-  -d '{
-    "user": {
-      "email": "admin@example.com",
-      "password": "password123"
-    }
-  }'
-
-# Response:
-{
-  "message": "Login successful",
-  "user": { "id": 1, "email": "admin@example.com", "role": "admin", ... },
-  "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
-}
-```
 
 ### Prodotti (Pubblico)
 | Method | Endpoint | Auth | Descrizione |
@@ -379,20 +317,13 @@ curl -X POST http://localhost:3000/api/login \
 | GET | `/api/products` | ❌ | Lista prodotti con filtri |
 | GET | `/api/products/:id` | ❌ | Dettaglio singolo prodotto |
 
+
 **Query Parameters per `/api/products`:**
 - `title` - Ricerca per titolo (case-insensitive)
 - `min_price` - Prezzo minimo
 - `max_price` - Prezzo massimo
 - `sort` - Ordinamento: `price_asc`, `price_desc`, `date_asc`, `date_desc`
 
-**Esempio:**
-```bash
-# Tutti i prodotti
-curl http://localhost:3000/api/products
-
-# Filtro per titolo e prezzo
-curl "http://localhost:3000/api/products?title=laptop&min_price=500&max_price=2000&sort=price_asc"
-```
 
 ### Carrello (Autenticato)
 | Method | Endpoint | Auth | Descrizione |
@@ -403,17 +334,6 @@ curl "http://localhost:3000/api/products?title=laptop&min_price=500&max_price=20
 | DELETE | `/api/cart/items/:id` | ✅ | Rimuovi item dal carrello |
 | DELETE | `/api/cart` | ✅ | Svuota completamente il carrello |
 
-**Esempio:**
-```bash
-# Aggiungi prodotto (richiede token JWT)
-curl -X POST http://localhost:3000/api/cart/items \
-  -H "Authorization: Bearer YOUR_JWT_TOKEN" \
-  -H "Content-Type: application/json" \
-  -d '{
-    "product_id": "prod-1",
-    "quantity": 2
-  }'
-```
 
 ### Wishlist (Autenticato)
 | Method | Endpoint | Auth | Descrizione |
@@ -430,24 +350,6 @@ curl -X POST http://localhost:3000/api/cart/items \
 | GET | `/api/orders` | ✅ | Lista ordini utente |
 | POST | `/api/orders` | ✅ | Crea nuovo ordine dal carrello |
 
-**Esempio Creazione Ordine:**
-```bash
-curl -X POST http://localhost:3000/api/orders \
-  -H "Authorization: Bearer YOUR_JWT_TOKEN" \
-  -H "Content-Type: application/json" \
-  -d '{
-    "customer": {
-      "firstName": "Mario",
-      "lastName": "Rossi",
-      "email": "mario@example.com"
-    },
-    "address": {
-      "street": "Via Roma 123",
-      "city": "Milano",
-      "zip": "20100"
-    }
-  }'
-```
 
 ### Admin - Prodotti (Solo Admin)
 | Method | Endpoint | Auth | Descrizione |
@@ -457,24 +359,6 @@ curl -X POST http://localhost:3000/api/orders \
 | DELETE | `/api/admin/products/:id` | 🔐 Admin | Elimina prodotto |
 | PATCH | `/api/admin/products/:id/adjust_quantity` | 🔐 Admin | Modifica quantità inventario |
 
-**Esempio Creazione Prodotto:**
-```bash
-curl -X POST http://localhost:3000/api/admin/products \
-  -H "Authorization: Bearer ADMIN_JWT_TOKEN" \
-  -H "Content-Type: application/json" \
-  -d '{
-    "product": {
-      "title": "Nuovo Laptop",
-      "description": "Laptop potente per sviluppatori",
-      "price": 1299.99,
-      "original_price": 1499.99,
-      "quantity": 50,
-      "sale": true,
-      "thumbnail": "https://example.com/laptop.jpg",
-      "tags": ["electronics", "computers", "laptops"]
-    }
-  }'
-```
 
 ### Admin - Ordini (Solo Admin)
 | Method | Endpoint | Auth | Descrizione |
@@ -484,17 +368,6 @@ curl -X POST http://localhost:3000/api/admin/products \
 | DELETE | `/api/admin/orders/:id` | 🔐 Admin | Elimina ordine (ripristina stock) |
 | GET | `/api/admin/stats` | 🔐 Admin | Statistiche dashboard |
 
-**Response `/api/admin/stats`:**
-```json
-{
-  "total_orders": 42,
-  "total_revenue": 15234.50,
-  "total_users": 128,
-  "total_products": 52,
-  "low_stock_products": 5,
-  "recent_orders": [ /* ultimi 10 ordini */ ]
-}
-```
 
 ---
 
@@ -619,7 +492,264 @@ Progetto_Sistemi_Web/
 └── GUIDA_STUDIO.md             # Guida di studio completa
 ```
 
+### Diagramma delle Entità
+
+
+┌─────────────┐
+│    User     │
+│─────────────│
+│ id          │
+│ email       │◄────────┐
+│ password    │         │
+│ first_name  │         │
+│ last_name   │         │ 1
+│ address     │         │
+│ role        │         │
+└─────────────┘         │
+      │                 │
+      │ 1               │
+      │                 │
+      │ *               │
+┌─────▼─────┐    ┌──────┴──────┐
+│   Order   │    │    Cart     │
+│───────────│    │─────────────│
+│ id        │    │ id          │
+│ user_id   │    │ user_id     │
+│ customer  │    │ expires_at  │
+│ address   │    └──────┬──────┘
+│ total     │           │
+└─────┬─────┘           │ 1
+      │                 │
+      │ 1               │
+      │                 │
+      │ *               │ *
+┌─────▼─────┐    ┌──────▼──────┐
+│ OrderItem │    │  CartItem   │
+│───────────│    │─────────────│
+│ id        │    │ id          │
+│ order_id  │    │ cart_id     │
+│ product_id│◄───┤ product_id  │
+│ quantity  │    │ quantity    │
+│ unit_price│    │ unit_price  │
+└─────┬─────┘    └──────┬──────┘
+      │                 │
+      │                 │
+      │        ┌────────┘
+      │        │
+      │ *      │ *
+┌─────▼────────▼──┐
+│    Product      │
+│─────────────────│
+│ id (string)     │
+│ title           │
+│ description     │
+│ price           │
+│ original_price  │
+│ quantity        │
+│ sale            │
+│ thumbnail       │
+│ tags (JSON)     │
+└─────────────────┘
+      ▲
+      │ *
+      │
+      │ 1
+┌─────┴─────┐         ┌─────────────┐
+│ Wishlist  │◄────────│    User     │
+│   Item    │    1    │             │
+│───────────│         │ (riferito)  │
+│ id        │         └─────────────┘
+│ wishlist  │
+│ product_id│
+└───────────┘
+```
+
+### Descrizione delle Entità
+
+#### User (Utente)
+
+Rappresenta un utente del sistema, che può essere un cliente o un amministratore.
+
+**Attributi:**
+- `id`: Identificatore univoco (Integer)
+- `email`: Email univoca per l'autenticazione (String)
+- `password_digest`: Hash bcrypt della password (String)
+- `first_name`: Nome dell'utente (String)
+- `last_name`: Cognome dell'utente (String)
+- `address`: Indirizzo di spedizione predefinito (Text)
+- `role`: Ruolo dell'utente ('user' o 'admin') (String)
+
+**Relazioni:**
+- `has_many :orders` - Un utente può avere molti ordini
+- `has_one :cart` - Un utente ha un carrello
+- `has_one :wishlist` - Un utente ha una wishlist
+
+**Validazioni:**
+- Email: formato valido e univocità
+- Password: lunghezza minima di 6 caratteri
+- Role: deve essere 'user' o 'admin'
+
+#### Product (Prodotto)
+
+Rappresenta un prodotto disponibile nel catalogo.
+
+**Attributi:**
+- `id`: Identificatore univoco (String, ereditato dal sistema di mock)
+- `title`: Nome del prodotto (String)
+- `description`: Descrizione dettagliata (Text)
+- `price`: Prezzo corrente (Decimal 10,2)
+- `original_price`: Prezzo originale prima dello sconto (Decimal 10,2)
+- `quantity`: Quantità disponibile in magazzino (Integer)
+- `sale`: Flag per indicare se il prodotto è in offerta (Boolean)
+- `thumbnail`: URL dell'immagine (String)
+- `tags`: Array di tag per categorizzazione (JSON Array)
+- `created_at`: Data di creazione (DateTime)
+- `updated_at`: Data di ultimo aggiornamento (DateTime)
+
+**Relazioni:**
+- `has_many :cart_items` - Presente in molti carrelli
+- `has_many :order_items` - Presente in molti ordini
+- `has_many :wishlist_items` - Presente in molte wishlist
+
+**Metodi:**
+- `in_stock?`: Verifica se il prodotto è disponibile
+- `out_of_stock?`: Verifica se il prodotto è esaurito
+
+#### Cart (Carrello)
+
+Rappresenta il carrello della spesa di un utente o di un guest.
+
+**Attributi:**
+- `id`: Identificatore univoco (Integer)
+- `user_id`: ID dell'utente proprietario (Integer, nullable per guest)
+- `session_token`: Token per carrelli guest (String, nullable)
+- `expires_at`: Data di scadenza del carrello (DateTime)
+- `created_at`: Data di creazione (DateTime)
+- `updated_at`: Data di ultimo aggiornamento (DateTime)
+
+**Relazioni:**
+- `belongs_to :user` (opzionale)
+- `has_many :cart_items`
+- `has_many :products, through: :cart_items`
+
+**Metodi:**
+- `total()`: Calcola il totale del carrello
+- `item_count()`: Conta il numero di item nel carrello
+- `empty?()`: Verifica se il carrello è vuoto
+- `clear_items()`: Svuota il carrello
+
+**Funzionalità:**
+- Supporto per utenti autenticati e guest
+- Scadenza automatica dei carrelli guest dopo un periodo
+
+#### CartItem (Elemento del Carrello)
+
+Rappresenta un prodotto specifico all'interno di un carrello.
+
+**Attributi:**
+- `id`: Identificatore univoco (Integer)
+- `cart_id`: ID del carrello (Integer)
+- `product_id`: ID del prodotto (String)
+- `quantity`: Quantità del prodotto (Integer)
+- `unit_price`: Prezzo unitario al momento dell'aggiunta (Decimal 10,2)
+
+**Relazioni:**
+- `belongs_to :cart`
+- `belongs_to :product`
+
+**Validazioni:**
+- Quantità: deve essere positiva
+- Disponibilità: verifica stock prima dell'aggiunta
+- Unicità: un prodotto può apparire una sola volta per carrello (composite unique index)
+
+#### Order (Ordine)
+
+Rappresenta un ordine completato da un utente.
+
+**Attributi:**
+- `id`: Identificatore univoco (Integer)
+- `user_id`: ID dell'utente (Integer, opzionale per ordini guest)
+- `customer`: Dati del cliente in formato JSON (JSON)
+  - `first_name`, `last_name`, `email`, `phone`
+- `address`: Indirizzo di spedizione in formato JSON (JSON)
+  - `street`, `city`, `postal_code`, `country`
+- `total`: Totale dell'ordine (Decimal 10,2)
+- `created_at`: Data di creazione/ordine (DateTime)
+- `updated_at`: Data di ultimo aggiornamento (DateTime)
+
+**Relazioni:**
+- `belongs_to :user` (opzionale)
+- `has_many :order_items`
+- `has_many :products, through: :order_items`
+
+**Callbacks:**
+- `before_destroy`: Ripristina le quantità dei prodotti in magazzino
+
+#### OrderItem (Elemento dell'Ordine)
+
+Rappresenta un prodotto specifico all'interno di un ordine.
+
+**Attributi:**
+- `id`: Identificatore univoco (Integer)
+- `order_id`: ID dell'ordine (Integer)
+- `product_id`: ID del prodotto (String)
+- `quantity`: Quantità ordinata (Integer)
+- `unit_price`: Prezzo unitario al momento dell'ordine (Decimal 10,2)
+
+**Relazioni:**
+- `belongs_to :order`
+- `belongs_to :product`
+
+**Validazioni:**
+- Unicità: un prodotto può apparire una sola volta per ordine (composite unique index)
+
+#### Wishlist (Lista dei Desideri)
+
+Rappresenta la lista dei prodotti desiderati da un utente.
+
+**Attributi:**
+- `id`: Identificatore univoco (Integer)
+- `user_id`: ID dell'utente (Integer, unique)
+- `created_at`: Data di creazione (DateTime)
+- `updated_at`: Data di ultimo aggiornamento (DateTime)
+
+**Relazioni:**
+- `belongs_to :user`
+- `has_many :wishlist_items`
+- `has_many :products, through: :wishlist_items`
+
+**Metodi:**
+- `item_count()`: Conta il numero di prodotti nella wishlist
+- `empty?()`: Verifica se la wishlist è vuota
+- `includes_product?(product_id)`: Verifica se un prodotto è nella wishlist
+- `clear_items()`: Svuota la wishlist
+
+#### WishlistItem (Elemento della Wishlist)
+
+Rappresenta un prodotto nella wishlist di un utente.
+
+**Attributi:**
+- `id`: Identificatore univoco (Integer)
+- `wishlist_id`: ID della wishlist (Integer)
+- `product_id`: ID del prodotto (String)
+- `created_at`: Data di aggiunta (DateTime)
+- `updated_at`: Data di ultimo aggiornamento (DateTime)
+
+**Relazioni:**
+- `belongs_to :wishlist`
+- `belongs_to :product`
+
+**Validazioni:**
+- Unicità: un prodotto può apparire una sola volta per wishlist (composite unique index)
+
+
 ---
+## 🎯 Funzionalità Avanzate Implementate
+
+- ✅ Storico ordini avanzato con filtri
+- ✅ Wishlist
+- ✅ Admin Dashboard
+
 
 ## 🎯 Funzionalità Implementate
 
@@ -804,173 +934,3 @@ npm run test:coverage
 - Unit test per services (auth, cart, product)
 - Component tests per guard
 - Integration test per interceptors
-
----
-
-## 📚 Documentazione Aggiuntiva
-
-### File di Documentazione
-
-- **[ARCHITETTURA.md](./ARCHITETTURA.md)**
-  - Diagrammi ER dettagliati
-  - Flussi completi (login, carrello, checkout, admin)
-  - Spiegazione pattern utilizzati
-  - Sistema di autenticazione approfondito
-  - Gestione stato e sicurezza
-
-- **[GUIDA_STUDIO.md](./GUIDA_STUDIO.md)**
-  - Guida pratica per studiare il progetto
-  - Come modificare codice esistente
-  - Come creare nuove funzionalità da zero
-  - Tutorial step-by-step (es. sistema recensioni)
-  - Come esporre il progetto (presentazione, domande frequenti)
-  - Debugging e troubleshooting
-
-### API Documentation
-
-Per documentazione API completa, puoi:
-
-1. **Esplorare con Postman:**
-   - Importa collection (crea da endpoints sopra)
-   - Configura environment con `BASE_URL` e `TOKEN`
-
-2. **Generare con Swagger/OpenAPI:**
-   ```bash
-   # Aggiungi al Gemfile:
-   gem 'rswag'
-
-   # Genera docs automatiche
-   rails rswag:specs:swaggerize
-   ```
-
----
-
-## 🚀 Deployment
-
-### Backend (Rails API)
-
-**Opzione 1: Heroku**
-```bash
-# Aggiungi Gemfile: gem 'pg' (PostgreSQL)
-# Rimuovi Gemfile: gem 'sqlite3'
-
-heroku create nome-app-backend
-git subtree push --prefix Backend heroku main
-heroku run rails db:migrate
-heroku run rails db:seed
-```
-
-**Opzione 2: Render**
-- Collega repository GitHub
-- Build Command: `bundle install; rails db:migrate`
-- Start Command: `rails server -b 0.0.0.0`
-- Environment: `RAILS_ENV=production`, `SECRET_KEY_BASE=...`
-
-**Note Produzione:**
-- Usa PostgreSQL invece di SQLite3
-- Configura CORS per dominio frontend
-- Imposta variabili ambiente (SECRET_KEY_BASE, DATABASE_URL)
-- Usa Redis per caching (Solid Cache)
-
-### Frontend (Angular)
-
-**Opzione 1: Vercel**
-```bash
-npm install -g vercel
-cd Frontend
-vercel
-
-# Configura:
-# - Build Command: ng build
-# - Output Directory: dist/flowboard
-```
-
-**Opzione 2: Netlify**
-```bash
-# netlify.toml
-[build]
-  command = "ng build --configuration production"
-  publish = "dist/flowboard"
-```
-
-**Note Produzione:**
-- Build production: `ng build --configuration production`
-- Aggiorna `baseUrl` nei services (usa environment variables)
-- Abilita Service Worker per PWA (opzionale)
-
-### Environment Variables
-
-**Backend (.env):**
-```
-RAILS_ENV=production
-SECRET_KEY_BASE=your-secret-key-base-64-chars
-DATABASE_URL=postgresql://...
-FRONTEND_URL=https://your-frontend.vercel.app
-```
-
-**Frontend (environment.prod.ts):**
-```typescript
-export const environment = {
-  production: true,
-  apiUrl: 'https://your-backend.herokuapp.com/api'
-};
-```
-
----
-
-## 🤝 Contribuire
-
-### Setup per Sviluppo
-
-1. Fork del repository
-2. Crea branch feature: `git checkout -b feature/nuova-funzionalita`
-3. Commit: `git commit -m 'Aggiungi nuova funzionalità'`
-4. Push: `git push origin feature/nuova-funzionalita`
-5. Apri Pull Request
-
-### Code Style
-
-**Backend (Ruby):**
-- Segui Rubocop Rails Omakase
-- `bundle exec rubocop -a` per auto-fix
-
-**Frontend (TypeScript):**
-- Segui Angular Style Guide
-- Prettier per formatting (`npm run format`)
-- ESLint per linting
-
----
-
-## 📝 License
-
-Questo progetto è rilasciato sotto licenza MIT. Vedi il file `LICENSE` per dettagli.
-
----
-
-## 👨‍💻 Autore
-
-**[Il Tuo Nome]**
-- GitHub: [@tuousername](https://github.com/tuousername)
-- Email: tua@email.com
-
----
-
-## 🙏 Ringraziamenti
-
-- Rails Team per l'eccellente framework
-- Angular Team per Angular e Material
-- Community open-source per le librerie utilizzate
-
----
-
-## 📞 Supporto
-
-Per problemi o domande:
-
-1. Consulta la [GUIDA_STUDIO.md](./GUIDA_STUDIO.md) per troubleshooting
-2. Apri un issue su GitHub
-3. Contatta via email
-
----
-
-**Buon coding! 🚀**
