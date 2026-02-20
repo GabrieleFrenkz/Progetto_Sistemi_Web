@@ -1,6 +1,6 @@
 <section class="container">
     <header class="header">
-        <h2>Products</h2>
+        <h2>Prodotti</h2>
     </header>
     <form class="filters">
 
@@ -34,14 +34,13 @@
         [pageIndex]="((page$ | async)||1)-1" aria-label="Select page" (page)="onPage($event)">
     </mat-paginator>
 
-    @for (p of paged$ | async; track p.id) {
-
-    <app-product-card [product]="p" (add)="onAddToCart($event)">
-    </app-product-card>
-
-    } @empty {
-    <p>Nessun prodotto trovato</p>
-    }
-
+    <div class="products-grid">
+        @for (p of paged$ | async; track p.id) {
+            <app-product-card [product]="p" (add)="onAddToCart($event)">
+            </app-product-card>
+        } @empty {
+            <p>Nessun prodotto trovato</p>
+        }
+    </div>
 
 </section>

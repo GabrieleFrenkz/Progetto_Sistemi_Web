@@ -229,9 +229,8 @@ ng version
 cd Backend
 
 # Avvia il server Rails
-rails server
-# oppure
-rails s
+rbin/dev
+
 
 # Output atteso:
 # => Booting Puma

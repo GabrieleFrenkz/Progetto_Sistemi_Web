@@ -47,10 +47,10 @@ export class CartPage implements OnInit {
   incrementQuantity(item: CartItem): void {
     this.cartService.incrementQuantity(item.id, item.quantity).subscribe({
       next: () => {
-        this.showMessage('Quantity updated');
+        this.showMessage('Quantità aggiornata');
       },
       error: (err) => {
-        this.showMessage(err.error?.details?.[0] || 'Failed to update quantity', true);
+        this.showMessage(err.error?.details?.[0] || 'Errore nell\'aggiornamento della quantità', true);
       }
     });
   }
@@ -58,10 +58,10 @@ export class CartPage implements OnInit {
   decrementQuantity(item: CartItem): void {
     this.cartService.decrementQuantity(item.id, item.quantity).subscribe({
       next: () => {
-        this.showMessage(item.quantity === 1 ? 'Item removed' : 'Quantity updated');
+        this.showMessage(item.quantity === 1 ? 'Articolo rimosso' : 'Quantità aggiornata');
       },
       error: () => {
-        this.showMessage('Failed to update quantity', true);
+        this.showMessage('Errore nell\'aggiornamento della quantità', true);
       }
     });
   }
@@ -69,22 +69,22 @@ export class CartPage implements OnInit {
   removeItem(item: CartItem): void {
     this.cartService.removeItem(item.id).subscribe({
       next: () => {
-        this.showMessage('Item removed from cart');
+        this.showMessage('Articolo rimosso dal carrello');
       },
       error: () => {
-        this.showMessage('Failed to remove item', true);
+        this.showMessage('Errore nella rimozione dell\'articolo', true);
       }
     });
   }
 
   clearCart(): void {
-    if (confirm('Are you sure you want to clear your entire cart?')) {
+    if (confirm('Sei sicuro di voler svuotare l\'intero carrello?')) {
       this.cartService.clearCart().subscribe({
         next: () => {
-          this.showMessage('Cart cleared');
+          this.showMessage('Carrello svuotato');
         },
         error: () => {
-          this.showMessage('Failed to clear cart', true);
+          this.showMessage('Errore nello svuotamento del carrello', true);
         }
       });
     }

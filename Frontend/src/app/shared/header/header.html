@@ -3,7 +3,7 @@
     <mat-icon>menu</mat-icon>
   </button>
 
-  <span class="Title">Tech Online Store</span>
+  <span class="Title">L'OSHI DELLA TECH</span>
 
   <span class="spacer"></span>
 
@@ -12,12 +12,12 @@
     @if (isAdmin()) {
       <button mat-button (click)="goToAdmin()">
         <mat-icon>admin_panel_settings</mat-icon>
-        Admin Dashboard
+        Pannello Admin
       </button>
     }
 
     <button matIconButton
-            aria-label="Wishlist"
+            aria-label="Lista desideri"
             (click)="goToWishlist()"
             [matBadge]="wishlistItemCount()"
             [matBadgeHidden]="wishlistItemCount() === 0"
@@ -26,7 +26,7 @@
     </button>
 
     <button matIconButton
-            aria-label="Shopping cart"
+            aria-label="Carrello"
             (click)="goToCart()"
             [matBadge]="cartItemCount()"
             [matBadgeHidden]="cartItemCount() === 0"
@@ -34,35 +34,35 @@
       <mat-icon>shopping_cart</mat-icon>
     </button>
 
-    <button mat-button [matMenuTriggerFor]="userMenu" aria-label="User menu">
+    <button mat-button [matMenuTriggerFor]="userMenu" aria-label="Menu utente">
       <mat-icon>person</mat-icon>
       {{ currentUser()?.firstName }}
     </button>
 
-    <mat-menu #userMenu="matMenu">
+    <mat-menu #userMenu="matMenu" xPosition="before" yPosition="below">
       <button mat-menu-item disabled>
         <mat-icon>email</mat-icon>
         {{ currentUser()?.email }}
       </button>
       <button mat-menu-item (click)="goToOrders()">
         <mat-icon>receipt_long</mat-icon>
-        My Orders
+        I Miei Ordini
       </button>
       <button mat-menu-item (click)="logout()">
         <mat-icon>logout</mat-icon>
-        Logout
+        Esci
       </button>
     </mat-menu>
   } @else {
     <!-- User is not logged in -->
     <button mat-button (click)="goToLogin()">
       <mat-icon>login</mat-icon>
-      Login
+      Accedi
     </button>
 
     <button mat-button (click)="goToRegister()">
       <mat-icon>person_add</mat-icon>
-      Register
+      Registrati
     </button>
   }
 </mat-toolbar>

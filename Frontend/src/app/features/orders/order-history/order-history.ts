@@ -76,7 +76,7 @@ export class OrderHistoryPage implements OnInit {
         this.loading.set(false);
       },
       error: (err) => {
-        this.error.set(err.error?.error || 'Failed to load orders');
+        this.error.set(err.error?.error || 'Errore nel caricamento degli ordini');
         this.loading.set(false);
       }
     });

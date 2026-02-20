@@ -48,10 +48,10 @@ export class WishlistPage implements OnInit {
   removeItem(item: WishlistItem): void {
     this.wishlistService.removeItem(item.id).subscribe({
       next: () => {
-        this.showMessage('Item removed from wishlist');
+        this.showMessage('Articolo rimosso dalla lista');
       },
       error: () => {
-        this.showMessage('Failed to remove item', true);
+        this.showMessage('Errore nella rimozione dell\'articolo', true);
       }
     });
   }
@@ -59,10 +59,10 @@ export class WishlistPage implements OnInit {
   addToCart(item: WishlistItem): void {
     this.cartService.addToCart(item.productId, 1).subscribe({
       next: () => {
-        this.showMessage('Added to cart');
+        this.showMessage('Aggiunto al carrello');
       },
       error: (err) => {
-        this.showMessage(err.error?.error || 'Failed to add to cart', true);
+        this.showMessage(err.error?.error || 'Errore nell\'aggiunta al carrello', true);
       }
     });
   }
@@ -92,13 +92,13 @@ export class WishlistPage implements OnInit {
   }
 
   clearWishlist(): void {
-    if (confirm('Are you sure you want to clear your entire wishlist?')) {
+    if (confirm('Sei sicuro di voler svuotare l\'intera lista desideri?')) {
       this.wishlistService.clearWishlist().subscribe({
         next: () => {
-          this.showMessage('Wishlist cleared');
+          this.showMessage('Lista desideri svuotata');
         },
         error: () => {
-          this.showMessage('Failed to clear wishlist', true);
+          this.showMessage('Errore nello svuotamento della lista', true);
         }
       });
     }
@@ -121,11 +121,11 @@ export class WishlistPage implements OnInit {
 
   private showCompletionMessage(successCount: number, failCount: number): void {
     if (failCount === 0) {
-      this.showMessage(`All ${successCount} items added to cart`);
+      this.showMessage(`Tutti i ${successCount} articoli sono stati aggiunti al carrello`);
     } else if (successCount === 0) {
-      this.showMessage('Failed to add items to cart', true);
+      this.showMessage('Errore nell\'aggiunta degli articoli al carrello', true);
     } else {
-      this.showMessage(`${successCount} items added, ${failCount} failed`);
+      this.showMessage(`${successCount} articoli aggiunti, ${failCount} falliti`);
     }
   }
 }

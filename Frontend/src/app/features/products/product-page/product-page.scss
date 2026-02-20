@@ -1,4 +1,7 @@
     .container {
+        max-width: 900px;
+        margin: 0 auto;
+        padding: 2rem 1rem;
         display: flex;
         justify-content: center;
         text-align: center;
@@ -9,6 +12,19 @@
     .header {
         width: 100%;
         text-align: center;
+        margin-bottom: 1.5rem;
+
+        h2 {
+            font-size: 2.5rem;
+            font-weight: 700;
+            line-height: 1.2;
+            padding: 0.2rem 0;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            display: inline-block;
+        }
     }
 
     .filters {
@@ -48,7 +64,15 @@
     //     text-align: center;
     // }
 
+    .products-grid {
+        display: flex;
+        flex-direction: column;
+        gap: 2rem;
+        margin-top: 2rem;
+        align-items: center;
+    }
+
     app-product-card {
         width: 100%;
-        margin-top: 2em;
+        max-width: 800px;
     }

@@ -1,10 +1,10 @@
 <div class="cart-container">
-  <h1>Shopping Cart</h1>
+  <h1>Carrello</h1>
 
   @if (loading()) {
     <div class="loading-container">
       <mat-spinner></mat-spinner>
-      <p>Loading cart...</p>
+      <p>Caricamento carrello...</p>
     </div>
   }
 
@@ -14,7 +14,7 @@
         <mat-icon color="warn">error</mat-icon>
         <p>{{ error() }}</p>
         <button mat-raised-button color="primary" (click)="cartService.loadCart()">
-          Retry
+          Riprova
         </button>
       </mat-card-content>
     </mat-card>
@@ -24,10 +24,10 @@
     <mat-card appearance="outlined" class="empty-cart">
       <mat-card-content>
         <mat-icon class="empty-icon">shopping_cart</mat-icon>
-        <h2>Your cart is empty</h2>
-        <p>Start adding products to your cart!</p>
+        <h2>Il tuo carrello è vuoto</h2>
+        <p>Inizia ad aggiungere prodotti al tuo carrello!</p>
         <button mat-raised-button color="primary" (click)="continueShopping()">
-          Continue Shopping
+          Continua gli Acquisti
         </button>
       </mat-card-content>
     </mat-card>
@@ -56,7 +56,7 @@
                   @if (item.unitPrice !== item.product.price) {
                     <p class="price-notice">
                       <mat-icon>info</mat-icon>
-                      Price locked at time of adding to cart
+                      Prezzo bloccato al momento dell'aggiunta al carrello
                     </p>
                   }
 
@@ -97,17 +97,21 @@
       <div class="cart-summary">
         <mat-card appearance="outlined">
           <mat-card-header>
-            <mat-card-title>Order Summary</mat-card-title>
+            <mat-card-title>Riepilogo Ordine</mat-card-title>
           </mat-card-header>
           <mat-card-content>
             <div class="summary-row">
-              <span>Items ({{ itemCount() }})</span>
-              <span>{{ total() | currency: 'EUR' }}</span>
+              <span class="summary-label">Articoli</span>
+              <span class="summary-value">{{ itemCount() }}</span>
+            </div>
+            <div class="summary-row">
+              <span class="summary-label">Subtotale</span>
+              <span class="summary-value">{{ total() | currency: 'EUR' }}</span>
             </div>
             <mat-divider></mat-divider>
             <div class="summary-row total">
-              <span>Total</span>
-              <span>{{ total() | currency: 'EUR' }}</span>
+              <span class="summary-label">Totale</span>
+              <span class="summary-value">{{ total() | currency: 'EUR' }}</span>
             </div>
           </mat-card-content>
           <mat-card-actions>
@@ -116,16 +120,19 @@
                     (click)="goToCheckout()"
                     [disabled]="loading()"
                     class="checkout-button">
-              Proceed to Checkout
+              Procedi al Pagamento
             </button>
-            <button mat-button (click)="continueShopping()">
-              Continue Shopping
+            <button mat-stroked-button
+                    (click)="continueShopping()"
+                    class="secondary-button">
+              Continua gli Acquisti
             </button>
-            <button mat-button
+            <button mat-stroked-button
                     color="warn"
                     (click)="clearCart()"
-                    [disabled]="loading()">
-              Clear Cart
+                    [disabled]="loading()"
+                    class="clear-button">
+              Svuota Carrello
             </button>
           </mat-card-actions>
         </mat-card>

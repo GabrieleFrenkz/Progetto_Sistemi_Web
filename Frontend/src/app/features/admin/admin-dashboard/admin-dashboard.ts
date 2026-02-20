@@ -64,9 +64,16 @@ export class AdminDashboard implements OnInit {
   productForm: FormGroup;
   editingProduct = signal<Product | null>(null);
 
+  // Menu laterale
+  activeSection = signal<'statistics' | 'products' | 'orders'>('statistics');
+
   productsColumns = ['id', 'title', 'price', 'quantity', 'actions'];
   ordersColumns = ['id', 'customer', 'total', 'createdAt', 'actions'];
   recentOrdersColumns = ['id', 'customer', 'total', 'createdAt'];
+
+  setActiveSection(section: 'statistics' | 'products' | 'orders'): void {
+    this.activeSection.set(section);
+  }
 
   constructor() {
     this.productForm = this.fb.group({
@@ -172,7 +179,7 @@ export class AdminDashboard implements OnInit {
   }
 
   onDeleteProduct(id: string): void {
-    if (confirm('Are you sure you want to delete this product?')) {
+    if (confirm('Sei sicuro di voler eliminare questo prodotto?')) {
       this.adminService.deleteProduct(id).subscribe({
         next: () => {
           this.loadProducts();
@@ -206,7 +213,7 @@ export class AdminDashboard implements OnInit {
 
   // Orders Management
   onDeleteOrder(id: number): void {
-    if (confirm('Are you sure you want to delete this order?')) {
+    if (confirm('Sei sicuro di voler eliminare questo ordine?')) {
       this.adminService.deleteOrder(id).subscribe({
         next: () => {
           this.loadOrders();
