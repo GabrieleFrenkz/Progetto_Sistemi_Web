@@ -490,10 +490,9 @@ Progetto_Sistemi_Web/
 ├── README.md                   # Questo file
 ├── ARCHITETTURA.md             # Documentazione architettura dettagliata
 └── GUIDA_STUDIO.md             # Guida di studio completa
-
+```
 ```
 ### Diagramma delle Entità
-
 
 ┌─────────────┐
 │    User     │
@@ -562,9 +561,8 @@ Progetto_Sistemi_Web/
 │ wishlist  │
 │ product_id│
 └───────────┘
-
-
 ```
+
 ### Descrizione delle Entità
 
 #### User (Utente)
