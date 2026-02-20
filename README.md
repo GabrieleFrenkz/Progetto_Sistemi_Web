@@ -294,6 +294,7 @@ Ruolo:    user
 (Stesse funzionalità dell'Utente #1)
 ```
 
+```
 ### 🆕 Registrazione Nuovo Utente
 - Vai su **http://localhost:4200/register**
 - Compila il form di registrazione
@@ -372,6 +373,7 @@ Ruolo:    user
 ---
 
 ## 📁 Struttura del Progetto
+```
 
 ```
 Progetto_Sistemi_Web/
@@ -492,6 +494,7 @@ Progetto_Sistemi_Web/
 └── GUIDA_STUDIO.md             # Guida di studio completa
 ```
 
+```
 ### Diagramma delle Entità
 
 
@@ -564,6 +567,7 @@ Progetto_Sistemi_Web/
 └───────────┘
 ```
 
+```
 ### Descrizione delle Entità
 
 #### User (Utente)
