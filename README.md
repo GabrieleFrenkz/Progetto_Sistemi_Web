@@ -374,8 +374,6 @@ Ruolo:    user
 
 ## 📁 Struttura del Progetto
 ```
-
-```
 Progetto_Sistemi_Web/
 │
 ├── Backend/                    # Rails API
@@ -492,7 +490,6 @@ Progetto_Sistemi_Web/
 ├── README.md                   # Questo file
 ├── ARCHITETTURA.md             # Documentazione architettura dettagliata
 └── GUIDA_STUDIO.md             # Guida di studio completa
-```
 
 ```
 ### Diagramma delle Entità
@@ -565,7 +562,7 @@ Progetto_Sistemi_Web/
 │ wishlist  │
 │ product_id│
 └───────────┘
-```
+
 
 ```
 ### Descrizione delle Entità
